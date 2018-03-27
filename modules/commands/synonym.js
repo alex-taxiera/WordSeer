@@ -7,8 +7,11 @@ module.exports = new Command({
   permission: 'Anyone',
   run: async ({ msg, params }) => {
     return {
-      title: 'Not yet implemented',
-      description: 'Not yet implemented'
+      content: '',
+      embed: {
+        title: 'Not yet implemented',
+        description: 'Not yet implemented'
+      }
     }
   }
 })

@@ -8,12 +8,16 @@ describe('Synonyms', function () {
   it('should return embed object with synonym data', async function () {
     const params = ['snake']
     const expected = {
-      title: `Synonyms for: ${params[0]}`,
-      description: 'beast, boor, cad, churl, clown, creep, cur, dog, heel, jerk, joker, louse, lout, pill, rat, reptile, scum, skunk, slob, stinker, swine, varmint, vermin'
+      content: '',
+      embed: {
+        title: `Synonyms for: ${params[0]}`,
+        description: 'beast, boor, cad, churl, clown, creep, cur, dog, heel, jerk, joker, louse, lout, pill, rat, reptile, scum, skunk, slob, stinker, swine, varmint, vermin'
+      }
     }
     const actual = await command.synonym.run({ params })
-    assert.equal(actual.title, expected.title)
-    assert.equal(actual.description, expected.description)
+    assert.equal(actual.content, expected.content)
+    assert.equal(actual.embed.title, expected.embed.title)
+    assert.equal(actual.embed.description, expected.embed.description)
   })
   // TODO: Error handling
   // it('', async function () {
