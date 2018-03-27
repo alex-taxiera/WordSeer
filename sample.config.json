@@ -2,7 +2,7 @@
   "TOKEN": "",
   "MW_KEY": "",
   "DB_CREDENTIALS": {
-    "database": "eris-boiler",
+    "database": "word-seer",
     "host": "127.0.0.1",
     "user": "root",
     "password": ""
