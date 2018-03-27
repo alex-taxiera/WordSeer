@@ -3,14 +3,17 @@ const command = require('../modules/commands')
 
 describe('Synonyms', function () {
   it('should return error message if word doesn\'t exist', async function () {
-    assert.equal(await command.synonym.execute('sssssssnake'), 'Word does not exist')
+    assert.equal(await command.synonym.run({ params: ['sssssssnake'] }), 'Word does not exist')
   })
   it('should return embed object with synonym data', async function () {
-    let word = 'snake'
-    assert.equal(await command.synonym.execute(word), {
-      title: `Synonyms for: ${word}`,
+    const params = ['snake']
+    const expected = {
+      title: `Synonyms for: ${params[0]}`,
       description: 'beast, boor, cad, churl, clown, creep, cur, dog, heel, jerk, joker, louse, lout, pill, rat, reptile, scum, skunk, slob, stinker, swine, varmint, vermin'
-    })
+    }
+    const actual = await command.synonym.run({ params })
+    assert.equal(actual.title, expected.title)
+    assert.equal(actual.description, expected.description)
   })
   // TODO: Error handling
   // it('', async function () {

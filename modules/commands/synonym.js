@@ -6,6 +6,9 @@ module.exports = new Command({
   parameters: ['word'],
   permission: 'Anyone',
   run: async ({ msg, params }) => {
-    return 'Not yet implemented'
+    return {
+      title: 'Not yet implemented',
+      description: 'Not yet implemented'
+    }
   }
 })
