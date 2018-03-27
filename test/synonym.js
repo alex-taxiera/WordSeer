@@ -1,5 +1,5 @@
 const assert = require('assert')
-const command = require('../commands')
+const command = require('../modules/commands')
 
 describe('Synonyms', function () {
   it('should return error message if word doesn\'t exist', async function () {
