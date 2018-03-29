@@ -8,6 +8,7 @@ const author = {
 const channel = {
   id: '123'
 }
+
 const suggestions = [
   'snake',
   'sneak',

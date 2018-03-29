@@ -34,10 +34,10 @@ const suggestions = [
 
 describe('Define', function () {
   it('should return error message if word doesn\'t exist', async function () {
-    assert.equal(await command.wordSearch.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
+    assert.equal(await command.define.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
   })
   it('should return suggestions if word is similar to, but not actually a word', async function () {
-    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(' ,')}`)
+    assert.equal(await command.define.run({ msg: { author, channel }, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(' ,')}`)
   })
   it('should return embed object with definition(s), functional label, popularity, and pronunciation', async function () {
     const params = ['snake']
@@ -66,7 +66,7 @@ describe('Define', function () {
         ]
       }
     }
-    command.synonym.run({ msg: { author, channel }, params }).then((actual) => {
+    command.define.run({ msg: { author, channel }, params }).then((actual) => {
       assert.equal(actual.content, expected.content)
       assert.equal(actual.embed.title, expected.embed.title)
       assert.equal(actual.embed.description, expected.embed.description)
