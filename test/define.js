@@ -9,9 +9,35 @@ const channel = {
   id: '123'
 }
 
+const suggestions = [
+  'snake',
+  'sneak',
+  'snaky',
+  'sneaky',
+  'snack',
+  'Sankt',
+  'snook',
+  'sneck',
+  'Snead',
+  'senate',
+  'sante',
+  'snick',
+  'Sainte',
+  'snide',
+  'Santee',
+  'sundae',
+  'Santa',
+  'Sankhya',
+  'Hsinkao',
+  'snag'
+]
+
 describe('Define', function () {
   it('should return error message if word doesn\'t exist', async function () {
     assert.equal(await command.wordSearch.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
+  })
+  it('should return suggestions if word is similar to, but not actually a word', async function () {
+    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(' ,')}`)
   })
   it('should return embed object with definition(s), functional label, popularity, and pronunciation', async function () {
     const params = ['snake']
@@ -48,6 +74,6 @@ describe('Define', function () {
     require('../bot.js').emit('messageCreate', { content: '1', author, channel })
   })
   it('should return undefined if user does not respond to specify message', async function () {
-    assert.equal(await command.define.run({ msg: { author, channel }, params: ['ssnake'] }), undefined)
+    assert.equal(await command.define.run({ msg: { author, channel }, params: ['snake'] }), undefined)
   })
 })

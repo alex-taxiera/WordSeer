@@ -8,10 +8,35 @@ const author = {
 const channel = {
   id: '123'
 }
+const suggestions = [
+  'snake',
+  'sneak',
+  'snaky',
+  'sneaky',
+  'snack',
+  'Sankt',
+  'snook',
+  'sneck',
+  'Snead',
+  'senate',
+  'sante',
+  'snick',
+  'Sainte',
+  'snide',
+  'Santee',
+  'sundae',
+  'Santa',
+  'Sankhya',
+  'Hsinkao',
+  'snag'
+]
 
 describe('Synonyms', function () {
   it('should return error message if word doesn\'t exist', async function () {
     assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
+  })
+  it('should return suggestions if word is similar to, but not actually a word', async function () {
+    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(' ,')}`)
   })
   it('should return embed object with synonym data', function () {
     const params = ['snake']
@@ -30,6 +55,6 @@ describe('Synonyms', function () {
     require('../bot.js').emit('messageCreate', { content: '1', author, channel })
   })
   it('should return undefined if user does not respond to specify message', async function () {
-    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['ssnake'] }), undefined)
+    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['snake'] }), undefined)
   })
 })
