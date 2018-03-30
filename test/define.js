@@ -55,7 +55,7 @@ describe('Define', function () {
         fields: [
           {
             name: '1',
-            value: ': any of numerous limbless scaled reptiles (suborder Serpentes synonym Ophidia) with a long tapering body and with salivary glands often modified to produce venom which is injected through grooved or tubular fangs'
+            value: ': any of numerous limbless scaled reptiles (suborder Serpentes syn. Ophidia) with a long tapering body and with salivary glands often modified to produce venom which is injected through grooved or tubular fangs'
           },
           {
             name: '2',
@@ -63,7 +63,7 @@ describe('Define', function () {
           },
           {
             name: '3',
-            value: ": something (such as a plumber's snake) resembling a snake"
+            value: ": something (as a plumber's snake) resembling a snake"
           },
           {
             name: 'Popularity',
