@@ -1,6 +1,6 @@
 {
   "name": "word-seer",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Dictionary Discord Bot for the Merriam Webster API",
   "main": "bot.js",
   "scripts": {
