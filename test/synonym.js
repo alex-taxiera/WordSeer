@@ -6,7 +6,13 @@ const author = {
   mention: ''
 }
 const channel = {
-  id: '123'
+  id: '123',
+  messages: []
+}
+const msg = {
+  id: '2',
+  author,
+  channel
 }
 
 const suggestions = [
@@ -34,12 +40,12 @@ const suggestions = [
 
 describe('Synonyms', function () {
   it('should return error message if word does not exist', async function () {
-    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
+    assert.equal(await command.synonym.run({ msg, params: ['sssssssnake'] }), 'Word does not exist')
   })
   it('should return suggestions if word is similar to, but not actually a word', async function () {
-    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(' ,')}`)
+    assert.equal(await command.synonym.run({ msg, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(', ')}`)
   })
-  it('should return embed object with synonym data', function () {
+  it('should return embed object with synonym data', async function () {
     const params = ['fast']
     const expected = {
       content: '',
@@ -48,17 +54,20 @@ describe('Synonyms', function () {
         description: 'stuck, stable, tenacious, wild'
       }
     }
-    command.synonym.run({ msg: { author, channel }, params }).then((actual) => {
-      assert.equal(actual.content, expected.content)
-      assert.equal(actual.embed.title, expected.embed.title)
-      assert.equal(actual.embed.description, expected.embed.description)
-    })
-    require('../bot.js').emit('messageCreate', { content: '1', author, channel })
+    await channel.messages.push({ id: '3', content: '1', author })
+    command.synonym.run({ msg, params }).then((actual) => {
+      assert.deepEqual(actual, expected)
+    }).catch(console.error)
   })
   it('should return undefined if user does not respond to specify message', async function () {
-    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['snake'] }), undefined)
+    channel.messages = []
+    channel.messages.push(msg)
+    assert.equal(await command.synonym.run({ msg, params: ['snake'] }), undefined)
   })
   it('should return message that word has no synonyms if no synonyms exist', async function () {
-    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['snake'] }), `No synonyms for snake`)
+    command.synonym.run({ msg, params: ['snake'] }).then((actual) => {
+      assert.equal(actual, 'No synonyms for snake')
+    })
+    channel.messages.push({ id: '3', content: '1', author })
   })
 })
