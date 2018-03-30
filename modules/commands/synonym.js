@@ -7,13 +7,36 @@ module.exports = new Command({
   parameters: ['word'],
   permission: 'Anyone',
   run: async ({ msg, params }) => {
+    let word = params.join(' ')
     let promise = new Promise()
-    const results = await mw.search(params.join()) // returns a list of words, object { suggestions: [] }, or undefined
-    // if undefined:
-      promise.resolve('does not exist')
-    // if results.suggestions: send message embed asking user to select a word
-      promise.resolve('not found, did you mean one of these?') // with list of words appended as test spec
+    const results = await mw.search(word) // returns a list of words, object { suggestions: [] }, or undefined
+    if (!results) promise.resolve('Word does not exist')
+    if (results.suggestions) promise.resolve(`Word does not exist, try ${results.suggestions.join(', ')}`)
+    if (results.length === 1) {
+      let synonyms = []
+
+      for (let i = 0; i < results[0].definition.length; i++) {
+        let definition = results[0].definition[i]
+        if (definition.senses) {
+          for (let j = 0; j < definition.senses.length; j++) {
+            if (definition.senses[j].synonyms) synonyms = synonyms.concat(definition.senses[j].synonyms)
+          }
+        } else if (definition.synonyms) synonyms = synonyms.concat(definition.synonyms)
+      }
+      if (synonyms.length === 0) {
+        promise.resolve(`No synonyms for ${word}`)
+      } else {
+        promise.resolve({
+          content: '',
+          embed: {
+            title: `Synonyms for: ${results[0].word}`,
+            description: synonyms.join(', ')
+          }
+        })
+      }
+    }
     // if results.length > 1, multiple possible words by this name
+    if (results.length > 1) {
       // send embed message, showing words and their functional labels
       let count = 0
       let loop = setInterval(function () {
@@ -36,9 +59,7 @@ module.exports = new Command({
           clearInterval(loop)
         }
       }, 1000)
-    // else only one word
-    // resolve promise with object made with results[0]
-    promise.resolve({})
+    }
     return promise
   }
 })
