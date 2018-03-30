@@ -6,7 +6,13 @@ const author = {
   mention: ''
 }
 const channel = {
-  id: '123'
+  id: '123',
+  messages: []
+}
+const msg = {
+  id: '2',
+  author,
+  channel
 }
 
 const suggestions = [
@@ -34,10 +40,10 @@ const suggestions = [
 
 describe('Define', function () {
   it('should return error message if word does not exist', async function () {
-    assert.equal(await command.define.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
+    assert.equal(await command.define.run({ msg, params: ['sssssssnake'] }), 'Word does not exist')
   })
   it('should return suggestions if word is similar to, but not actually a word', async function () {
-    assert.equal(await command.define.run({ msg: { author, channel }, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(', ')}`)
+    assert.equal(await command.define.run({ msg, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(', ')}`)
   })
   it('should return embed object with definition(s), functional label, popularity, and pronunciation', async function () {
     const params = ['snake']
@@ -66,14 +72,14 @@ describe('Define', function () {
         ]
       }
     }
-    command.define.run({ msg: { author, channel }, params }).then((actual) => {
-      assert.equal(actual.content, expected.content)
-      assert.equal(actual.embed.title, expected.embed.title)
-      assert.equal(actual.embed.description, expected.embed.description)
+    await channel.messages.push({ id: '3', content: '1', author })
+    command.define.run({ msg, params }).then((actual) => {
+      assert.deepEqual(actual, expected)
     })
-    require('../bot.js').emit('messageCreate', { content: '1', author, channel })
   })
   it('should return undefined if user does not respond to specify message', async function () {
-    assert.equal(await command.define.run({ msg: { author, channel }, params: ['snake'] }), undefined)
+    channel.messages = []
+    channel.messages.push(msg)
+    assert.equal(await command.define.run({ msg, params: ['snake'] }), undefined)
   })
 })
