@@ -8,13 +8,32 @@ module.exports = new Command({
   permission: 'Anyone',
   run: async ({ msg, params }) => {
     let promise = new Promise()
-    const results = await mw.search(params.join()) // returns a list of words, object { suggestions: [] }, or undefined
-    // if undefined:
-      promise.resolve('does not exist')
-    // if results.suggestions: send message embed asking user to select a word
-      promise.resolve('not found, did you mean one of these?') // with list of words appended as test spec
-    // if results.length > 1, multiple possible words by this name
-      // send embed message, showing words and their functional labels
+    let results = await mw.search(params.join()) // returns a list of words, object { suggestions: [] }, or undefined
+    if (!results) promise.resolve('Word does not exist')
+    if (results.suggestions) promise.resolve(`Word does not exist, try ${results.suggestions.join(', ')}`)
+    if (results.length === 1) {
+      // use results[0], iterate, resolve
+    }
+    if (results.length > 1) {
+      // send embed message, showing words and their functional labels, etymology?
+      results = results.filter((val, i) => i < 10)
+      let embed = {
+        title: 'What we found:',
+        fields: []
+      }
+      for (let i = 0; i < results.length; i++) {
+        const entry = results[0]
+        embed.fields.push({
+          name: entry.word,
+          value: `Function: ${entry.functional_label}`
+        })
+        if (entry.etymology) embed.fields[i].value = embed.fields[i].value + `\nEtymology: ${entry.etymology}`
+      }
+      console.log({content: `${msg.author.mention} Select a number 1-${results.length + 1}`, embed})
+      // const specify = await msg.channel.createMessage({
+      //   content: `${msg.author.mention} Select a number 1-${results.length + 1}`,
+      //   embed
+      // })
       let count = 0
       let loop = setInterval(function () {
         count++
@@ -24,21 +43,28 @@ module.exports = new Command({
           let response = last.content
           if (isNaN(response) || response < 1 || response > results.length + 1) {
             clearInterval(loop)
-            // bad response, delete message
+            // specify.delete()
+            promise.reject('Bad response')
           } else {
             clearInterval(loop)
-            // input was proper, create response inside promise.resolve() as spec, correct word is word[response - 1]
-            // delete message
-            promise.resolve({})
+            // specify.delete()
+            const final = results[response - 1]
+            let embed = {
+              title: final.word,
+              fields: []
+            }
+            // iterate through definition/senses and push them to fields
+            if (final.etymology) embed.description = final.etymology
+            promise.resolve({ content: '', embed })
           }
         }
         if (count > 30) {
           clearInterval(loop)
+          // specify.delete()
+          promise.reject('No response')
         }
       }, 1000)
-    // else only one word
-    // resolve promise with object made with results[0]
-    promise.resolve({})
+    }
     return promise
   }
 })
