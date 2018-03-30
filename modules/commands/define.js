@@ -51,10 +51,10 @@ module.exports = new Command({
             })
           }
           // console.log({content: `${msg.author.mention} Select a number 1-${results.length + 1}`, embed})
-          const specify = await msg.channel.createMessage({
-            content: `${msg.author.mention} Select a number 1-${results.length}`,
-            embed
-          })
+          // const specify = await msg.channel.createMessage({
+          //   content: `${msg.author.mention} Select a number 1-${results.length}`,
+          //   embed
+          // })
           let count = 0
           let loop = setInterval(function () {
             count++
@@ -62,7 +62,7 @@ module.exports = new Command({
             last = last[last.length - 1]
             if (last && last.timestamp > msg.timestamp) {
               clearInterval(loop)
-              specify.delete()
+              // specify.delete()
               let response = parseInt(last.content)
               if (isNaN(response) || response < 1 || response > results.length) {
                 resolve('Bad response')
@@ -94,12 +94,12 @@ module.exports = new Command({
                 resolve({ content: '', embed })
               }
             }
-            if (count > 30) {
+            if (count > 5) {
               clearInterval(loop)
-              specify.delete()
+              // specify.delete()
               resolve(undefined)
             }
-          }, 1000)
+          }, 200)
         }
       }
     })

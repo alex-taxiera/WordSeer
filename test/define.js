@@ -42,6 +42,7 @@ describe('Define', function () {
     }
     assert.equal(await command.define.run({ msg, params: ['sssssssnake'] }), 'Word does not exist')
   })
+
   it('should return suggestions if word is similar to, but not actually a word', async function () {
     const author = {
       id: '123',
@@ -59,6 +60,7 @@ describe('Define', function () {
     }
     assert.equal(await command.define.run({ msg, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(', ')}`)
   })
+
   it('should return embed object with definition(s), functional label, popularity, and pronunciation', async function () {
     const author = {
       id: '123',
@@ -114,6 +116,7 @@ describe('Define', function () {
       // }
     })
   })
+
   it('should return undefined if user does not respond to specify message', async function () {
     const author = {
       id: '123',
