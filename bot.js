@@ -59,8 +59,8 @@ bot.on('messageCreate', async (msg) => {
 
   if (command.name === 'help') params = commands
   command.run({ params, bot, msg })
-  .then(({ content, embed, delay = 10000 }) => {
-    if (!content) return
+  .then(({ content, embed, delay = 60000 }) => {
+    if (!content && !embed) return
     if (embed) {
       content = msg.author.mention + ' ' + content
       return msg.channel.createMessage({ content, embed })

@@ -37,7 +37,8 @@ describe('Define', function () {
     const msg = {
       id: '2',
       author,
-      channel
+      channel,
+      timestamp: 0
     }
     assert.equal(await command.define.run({ msg, params: ['sssssssnake'] }), 'Word does not exist')
   })
@@ -53,7 +54,8 @@ describe('Define', function () {
     const msg = {
       id: '2',
       author,
-      channel
+      channel,
+      timestamp: 0
     }
     assert.equal(await command.define.run({ msg, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(', ')}`)
   })
@@ -66,11 +68,12 @@ describe('Define', function () {
       id: '123',
       messages: []
     }
-    channel.messages.push({ id: '3', author, channel, content: '1' })
+    channel.messages.push({ id: '3', author, channel, content: '1', timestamp: 1 })
     const msg = {
       id: '2',
       author,
-      channel
+      channel,
+      timestamp: 0
     }
     const params = ['snake']
     const expected = {
@@ -123,7 +126,8 @@ describe('Define', function () {
     const msg = {
       id: '2',
       author,
-      channel
+      channel,
+      timestamp: 0
     }
     channel.messages.push(msg)
     assert.equal(await command.define.run({ msg, params: ['snake'] }), undefined)

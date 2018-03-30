@@ -44,31 +44,29 @@ module.exports = new Command({
             fields: []
           }
           for (let i = 0; i < results.length; i++) {
-            const entry = results[0]
+            const entry = results[i]
             embed.fields.push({
               name: entry.word,
               value: `Function: ${entry.functional_label}`
             })
           }
           // console.log({content: `${msg.author.mention} Select a number 1-${results.length + 1}`, embed})
-          // const specify = await msg.channel.createMessage({
-          //   content: `${msg.author.mention} Select a number 1-${results.length + 1}`,
-          //   embed
-          // })
+          const specify = await msg.channel.createMessage({
+            content: `${msg.author.mention} Select a number 1-${results.length}`,
+            embed
+          })
           let count = 0
           let loop = setInterval(function () {
             count++
             let last = msg.channel.messages.filter((m) => m.author.id === msg.author.id)
             last = last[last.length - 1]
-            if (last.id !== msg.id) {
-              let response = last.content
-              if (isNaN(response) || response < 1 || response > results.length + 1) {
-                clearInterval(loop)
-                // specify.delete()
+            if (last && last.timestamp > msg.timestamp) {
+              clearInterval(loop)
+              specify.delete()
+              let response = parseInt(last.content)
+              if (isNaN(response) || response < 1 || response > results.length) {
                 resolve('Bad response')
               } else {
-                clearInterval(loop)
-                // specify.delete()
                 const final = results[response - 1]
                 let embed = {
                   title: final.word,
@@ -96,12 +94,12 @@ module.exports = new Command({
                 resolve({ content: '', embed })
               }
             }
-            if (count > 5) {
+            if (count > 30) {
               clearInterval(loop)
-              // specify.delete()
+              specify.delete()
               resolve(undefined)
             }
-          }, 200)
+          }, 1000)
         }
       }
     })
