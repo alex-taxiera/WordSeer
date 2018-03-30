@@ -9,7 +9,7 @@ module.exports = new Command({
   run: async ({ msg, params }) => {
     let word = params.join(' ')
     let promise = new Promise()
-    const results = await mw.search(word) // returns a list of words, object { suggestions: [] }, or undefined
+    let results = await mw.search(word) // returns a list of words, object { suggestions: [] }, or undefined
     if (!results) promise.resolve('Word does not exist')
     if (results.suggestions) promise.resolve(`Word does not exist, try ${results.suggestions.join(', ')}`)
     if (results.length === 1) {
@@ -35,9 +35,25 @@ module.exports = new Command({
         })
       }
     }
-    // if results.length > 1, multiple possible words by this name
     if (results.length > 1) {
-      // send embed message, showing words and their functional labels
+      results = results.filter((val, i) => i < 10)
+      let embed = {
+        title: 'What we found:',
+        fields: []
+      }
+      for (let i = 0; i < results.length; i++) {
+        const entry = results[0]
+        embed.fields.push({
+          name: entry.word,
+          value: `Function: ${entry.functional_label}`
+        })
+        if (entry.etymology) embed.fields[i].value = embed.fields[i].value + `\nEtymology: ${entry.etymology}`
+      }
+      console.log({content: `${msg.author.mention} Select a number 1-${results.length + 1}`, embed})
+      // const specify = await msg.channel.createMessage({
+      //   content: `${msg.author.mention} Select a number 1-${results.length + 1}`,
+      //   embed
+      // })
       let count = 0
       let loop = setInterval(function () {
         count++
@@ -47,16 +63,34 @@ module.exports = new Command({
           let response = last.content
           if (isNaN(response) || response < 1 || response > results.length + 1) {
             clearInterval(loop)
-            // bad response, delete message
+            // specify.delete()
+            promise.reject('Bad response')
           } else {
             clearInterval(loop)
-            // input was proper, create response inside promise.resolve() as spec, correct word is word[response - 1]
-            // delete message
-            promise.resolve({})
+            // specify.delete()
+            const final = results[response - 1]
+            let synonyms = []
+            for (let i = 0; i < final.definition.length; i++) {
+              let definition = final.definition[i]
+              if (definition.senses) {
+                for (let j = 0; j < definition.senses.length; j++) {
+                  if (definition.senses[j].synonyms) synonyms = synonyms.concat(definition.senses[j].synonyms)
+                }
+              } else if (definition.synonyms) synonyms = synonyms.concat(definition.synonyms)
+            }
+            promise.resolve({
+              content: '',
+              embed: {
+                title: `Synonyms for: ${results[0].word}`,
+                description: synonyms.join(', ')
+              }
+            })
           }
         }
         if (count > 30) {
           clearInterval(loop)
+          // specify.delete()
+          promise.reject('No response')
         }
       }, 1000)
     }
