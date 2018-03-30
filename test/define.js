@@ -33,7 +33,7 @@ const suggestions = [
 ]
 
 describe('Define', function () {
-  it('should return error message if word doesn\'t exist', async function () {
+  it('should return error message if word does not exist', async function () {
     assert.equal(await command.define.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
   })
   it('should return suggestions if word is similar to, but not actually a word', async function () {
