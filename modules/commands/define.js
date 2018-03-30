@@ -7,12 +7,32 @@ module.exports = new Command({
   parameters: ['word'],
   permission: 'Anyone',
   run: async ({ msg, params }) => {
+    const word = params.join()
     let promise = new Promise()
-    let results = await mw.search(params.join()) // returns a list of words, object { suggestions: [] }, or undefined
+    let results = await mw.search(word) // returns a list of words, object { suggestions: [] }, or undefined
     if (!results) promise.resolve('Word does not exist')
     if (results.suggestions) promise.resolve(`Word does not exist, try ${results.suggestions.join(', ')}`)
     if (results.length === 1) {
-      // use results[0], iterate, resolve
+      let embed = {
+        title: word,
+        description: `*${results[0].functional_label}*, [link to sound](${results[0].pronunciation[0]})`,
+        fields: []
+      }
+
+      for (let i = 0; i < results[0].definition.length; i++) {
+        let definition = results[0].definition[i]
+        embed.fields.push({
+          name: definition.number,
+          value: ''
+        })
+        if (definition.senses) {
+          let temp = []
+          for (let j = 0; j < definition.senses.length; j++) {
+            if (definition.senses[j].meanings) temp.push(definition.senses[j].number + definition.senses[j].meanings.join(', '))
+          }
+          embed.fields[i].value = temp.join('\n')
+        } else if (definition.meanings) embed.fields[i].value = definition.meanings.join(', ')
+      }
     }
     if (results.length > 1) {
       // send embed message, showing words and their functional labels, etymology?
@@ -53,8 +73,20 @@ module.exports = new Command({
               title: final.word,
               fields: []
             }
-            // iterate through definition/senses and push them to fields
-            if (final.etymology) embed.description = final.etymology
+            for (let i = 0; i < final.definition.length; i++) {
+              let definition = final.definition[i]
+              embed.fields.push({
+                name: definition.number,
+                value: ''
+              })
+              if (definition.senses) {
+                let temp = []
+                for (let j = 0; j < definition.senses.length; j++) {
+                  if (definition.senses[j].meanings) temp.push(definition.senses[j].number + definition.senses[j].meanings.join(', '))
+                }
+                embed.fields[i].value = temp.join('\n')
+              } else if (definition.meanings) embed.fields[i].value = definition.meanings.join(', ')
+            }
             promise.resolve({ content: '', embed })
           }
         }
