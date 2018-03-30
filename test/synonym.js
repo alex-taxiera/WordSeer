@@ -33,19 +33,19 @@ const suggestions = [
 ]
 
 describe('Synonyms', function () {
-  it('should return error message if word doesn\'t exist', async function () {
+  it('should return error message if word does not exist', async function () {
     assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['sssssssnake'] }), 'Word does not exist')
   })
   it('should return suggestions if word is similar to, but not actually a word', async function () {
     assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(' ,')}`)
   })
   it('should return embed object with synonym data', function () {
-    const params = ['snake']
+    const params = ['fast']
     const expected = {
       content: '',
       embed: {
         title: `Synonyms for: ${params[0]}`,
-        description: 'beast, boor, cad, churl, clown, creep, cur, dog, heel, jerk, joker, louse, lout, pill, rat, reptile, scum, skunk, slob, stinker, swine, varmint, vermin'
+        description: 'stuck, stable, tenacious, wild'
       }
     }
     command.synonym.run({ msg: { author, channel }, params }).then((actual) => {
@@ -57,5 +57,8 @@ describe('Synonyms', function () {
   })
   it('should return undefined if user does not respond to specify message', async function () {
     assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['snake'] }), undefined)
+  })
+  it('should return message that word has no synonyms if no synonyms exist', async function () {
+    assert.equal(await command.synonym.run({ msg: { author, channel }, params: ['snake'] }), `No synonyms for snake`)
   })
 })
