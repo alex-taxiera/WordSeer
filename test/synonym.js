@@ -2,29 +2,6 @@
 const assert = require('assert')
 const command = require('../modules/commands')
 
-const suggestions = [
-  'snake',
-  'sneak',
-  'snaky',
-  'sneaky',
-  'snack',
-  'Sankt',
-  'snook',
-  'sneck',
-  'Snead',
-  'senate',
-  'sante',
-  'snick',
-  'Sainte',
-  'snide',
-  'Santee',
-  'sundae',
-  'Santa',
-  'Sankhya',
-  'Hsinkao',
-  'snag'
-]
-
 describe('Synonyms', function () {
   it('should return error message if word does not exist', async function () {
     const author = {
@@ -41,10 +18,33 @@ describe('Synonyms', function () {
       channel,
       timestamp: 0
     }
-    assert.equal(await command.synonym.run({ msg, params: ['sssssssnake'] }), 'Word does not exist')
+    await command.synonym.run({ msg, params: ['sssssssnake'] })
+    .then((actual) => assert.equal(actual, 'Word does not exist'))
   })
 
   it('should return suggestions if word is similar to, but not actually a word', async function () {
+    const suggestions = [
+      'snake',
+      'sneak',
+      'snaky',
+      'sneaky',
+      'snack',
+      'Sankt',
+      'snook',
+      'sneck',
+      'Snead',
+      'senate',
+      'sante',
+      'snick',
+      'Sainte',
+      'snide',
+      'Santee',
+      'sundae',
+      'Santa',
+      'Sankhya',
+      'Hsinkao',
+      'snag'
+    ]
     const author = {
       id: '123',
       mention: ''
@@ -59,7 +59,8 @@ describe('Synonyms', function () {
       channel,
       timestamp: 0
     }
-    assert.equal(await command.synonym.run({ msg, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(', ')}`)
+    await command.synonym.run({ msg, params: ['ssnake'] })
+    .then((actual) => assert.equal(actual, `Word does not exist, try ${suggestions.join(', ')}`))
   })
 
   it('should return embed object with synonym data', async function () {
@@ -86,9 +87,8 @@ describe('Synonyms', function () {
         description: 'stuck, stable, tenacious, wild'
       }
     }
-    command.synonym.run({ msg, params }).then((actual) => {
-      assert.deepEqual(actual, expected)
-    }).catch(console.error)
+    await command.synonym.run({ msg, params })
+    .then((actual) => assert.deepEqual(actual, expected))
   })
 
   it('should return undefined if user does not respond to specify message', async function () {
@@ -107,7 +107,8 @@ describe('Synonyms', function () {
       timestamp: 0
     }
     channel.messages.push(msg)
-    assert.equal(await command.synonym.run({ msg, params: ['snake'] }), undefined)
+    await command.synonym.run({ msg, params: ['snake'] })
+    .then((actual) => assert.equal(actual, undefined))
   })
 
   it('should return message that word has no synonyms if no synonyms exist', async function () {
@@ -126,8 +127,7 @@ describe('Synonyms', function () {
       channel,
       timestamp: 0
     }
-    command.synonym.run({ msg, params: ['snake'] }).then((actual) => {
-      assert.equal(actual, 'No synonyms for snake')
-    })
+    await command.synonym.run({ msg, params: ['snake'] })
+    .then((actual) => assert.equal(actual, 'No synonyms for snake'))
   })
 })

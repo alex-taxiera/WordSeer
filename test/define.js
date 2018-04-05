@@ -2,29 +2,6 @@
 const assert = require('assert')
 const command = require('../modules/commands')
 
-const suggestions = [
-  'snake',
-  'sneak',
-  'snaky',
-  'sneaky',
-  'snack',
-  'Sankt',
-  'snook',
-  'sneck',
-  'Snead',
-  'senate',
-  'sante',
-  'snick',
-  'Sainte',
-  'snide',
-  'Santee',
-  'sundae',
-  'Santa',
-  'Sankhya',
-  'Hsinkao',
-  'snag'
-]
-
 describe('Define', function () {
   it('should return error message if word does not exist', async function () {
     const author = {
@@ -41,7 +18,10 @@ describe('Define', function () {
       channel,
       timestamp: 0
     }
-    assert.equal(await command.define.run({ msg, params: ['sssssssnake'] }), 'Word does not exist')
+    const expected = 'Word does not exist'
+
+    await command.define.run({ msg, params: ['sssssssnake'] })
+    .then((actual) => assert.equal(actual, expected))
   })
 
   it('should return suggestions if word is similar to, but not actually a word', async function () {
@@ -59,7 +39,31 @@ describe('Define', function () {
       channel,
       timestamp: 0
     }
-    assert.equal(await command.define.run({ msg, params: ['ssnake'] }), `Word does not exist, try ${suggestions.join(', ')}`)
+    const expected = 'Word does not exist, try ' + [
+      'snake',
+      'sneak',
+      'snaky',
+      'sneaky',
+      'snack',
+      'Sankt',
+      'snook',
+      'sneck',
+      'Snead',
+      'senate',
+      'sante',
+      'snick',
+      'Sainte',
+      'snide',
+      'Santee',
+      'sundae',
+      'Santa',
+      'Sankhya',
+      'Hsinkao',
+      'snag'
+    ].join(', ')
+
+    await command.define.run({ msg, params: ['ssnake'] })
+    .then((actual) => assert.equal(actual, expected))
   })
 
   it('should return embed object with definition(s), functional label, popularity, and pronunciation', async function () {
@@ -71,18 +75,24 @@ describe('Define', function () {
       id: '123',
       messages: []
     }
-    channel.messages.push({ id: '3', author, channel, content: '1', timestamp: 1 })
-    const msg = {
+    const msg1 = {
       id: '2',
       author,
       channel,
       timestamp: 0
     }
-    const params = ['snake']
+    const msg2 = {
+      id: '3',
+      author,
+      channel,
+      content: '1',
+      timestamp: 1
+    }
+    channel.messages.push(msg1, msg2)
     const expected = {
       content: '',
       embed: {
-        title: params[0],
+        title: 'snake',
         description: '*noun*, [link to sound](http://media.merriam-webster.com/soundc11/s/snake001.wav)',
         fields: [
           {
@@ -104,18 +114,8 @@ describe('Define', function () {
         ]
       }
     }
-    command.define.run({ msg, params }).then((actual) => {
-      assert.deepEqual(actual, expected)
-      // assert.equal(actual.content, expected.content)
-      // assert.equal(actual.embed.description, expected.embed.description)
-      // assert.equal(actual.embed.title, expected.embed.title)
-      // for (let i = 0; i < expected.embed.fields.length; i++) {
-      //   console.log('actual: ', actual.embed.fields[i].value)
-      //   console.log('expected: ', expected.embed.fields[i].value)
-      //   assert.equal(actual.embed.fields[i].name, expected.embed.fields[i].name)
-      //   assert.equal(actual.embed.fields[i].value, expected.embed.fields[i].value)
-      // }
-    })
+    await command.define.run({ msg: msg1, params: ['snake'] })
+    .then((actual) => assert.deepEqual(actual, expected))
   })
 
   it('should return undefined if user does not respond to specify message', async function () {
@@ -133,7 +133,10 @@ describe('Define', function () {
       channel,
       timestamp: 0
     }
+    const expected = undefined
     channel.messages.push(msg)
-    assert.equal(await command.define.run({ msg, params: ['snake'] }), undefined)
+
+    await command.define.run({ msg, params: ['snake'] })
+    .then((actual) => assert.equal(actual, expected))
   })
 })

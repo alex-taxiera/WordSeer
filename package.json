@@ -4,7 +4,7 @@
   "description": "Dictionary Discord Bot for the Merriam Webster API",
   "main": "bot.js",
   "scripts": {
-    "test": "mocha --recursive test & standard & nodemon"
+    "test": "mocha --recursive test"
   },
   "repository": {
     "type": "git",
