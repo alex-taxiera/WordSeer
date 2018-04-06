@@ -45,22 +45,22 @@ describe('Urban', function () {
         description: '[permalink](http://kek.urbanup.com/1668182)',
         fields: [
           {
-            name: '',
+            name: 'Definition',
             value: 'Kek literally translates to lol on World of Warcraft. When someone from the Horde side types lol in /say, members of the alliance side see kek instead. Not specific to Orcs.',
             inline: true
           },
           {
-            name: 'Human Paladin: Dude, that Orc totally just pwned you.\r\nOrc: Kek.\r\nHuman: Dude, now he\'s laughing at you. Kick his ass.',
-            value: 'example',
+            name: 'Example',
+            value: 'Human Paladin: Dude, that Orc totally just pwned you.\r\nOrc: Kek.\r\nHuman: Dude, now he\'s laughing at you. Kick his ass.',
             inline: true
           },
           {
-            name: '',
+            name: 'Author',
             value: 'evapor8ed',
             inline: true
           },
           {
-            name: '',
+            name: 'Popularity',
             value: 'thumbs up: 5485, thumbs down: 2784',
             inline: true
           }

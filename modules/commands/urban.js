@@ -15,22 +15,22 @@ module.exports = new Command({
         description: `[permalink](${results.permalink})`,
         fields: [
           {
-            name: '',
+            name: 'Definition',
             value: results.definition,
             inline: true
           },
           {
-            name: results.example,
-            value: 'example',
+            name: 'Example',
+            value: results.example,
             inline: true
           },
           {
-            name: '',
+            name: 'Author',
             value: results.author,
             inline: true
           },
           {
-            name: '',
+            name: 'Popularity',
             value: `thumbs up: ${results.thumbs_up}, thumbs down: ${results.thumbs_down}`,
             inline: true
           }
