@@ -2,8 +2,8 @@ const Command = require('./Command.js')
 const mw = require('../mwapi.js')
 
 module.exports = new Command({
-  name: 'define',
-  description: 'Find and display definition, functional label, popularity, and pronunciation for a specific word',
+  name: 'example',
+  description: 'Find and display example sentences',
   parameters: ['word'],
   permission: 'Anyone',
   run: async ({ msg, params }) => {
@@ -13,24 +13,27 @@ module.exports = new Command({
       if (results.suggestions) return 'Word does not exist, try ' + results.suggestions.join(', ')
       let embed = {
         title: word,
-        description: `*${results.functional_label}*, [link to sound](${results.pronunciation[0]})`,
         fields: []
       }
       for (let i = 0; i < results.definition.length; i++) {
         let definition = results.definition[i]
-        embed.fields.push({
-          name: definition.number,
-          value: ''
-        })
+        let name, value
         if (definition.senses) {
+          name = definition.number
           let temp = []
           for (let j = 0; j < definition.senses.length; j++) {
-            if (definition.senses[j].meanings) temp.push(definition.senses[j].number + definition.senses[j].meanings.join(', '))
+            if (definition.senses[j].meanings) {
+              const sense = definition.senses[j]
+              if (sense.illustrations) temp.push(`${sense.number}${sense.meanings.join(', ')}\n${sense.illustrations.join(', ')}`)
+            }
           }
-          embed.fields[i].value = temp.join('\n')
-        } else if (definition.meanings) embed.fields[i].value = definition.meanings.join(', ')
+          value = temp.join('\n')
+        } else if (definition.illustrations) {
+          name = definition.number
+          value = definition.meanings.join(', ') + '\n' + definition.illustrations.join(', ')
+        }
+        if (name && value) embed.fields.push({ name, value })
       }
-      embed.fields.push({ name: 'Popularity', value: results.popularity })
       return { content: '', embed }
     })
     .catch((error) => {
