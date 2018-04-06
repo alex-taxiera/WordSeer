@@ -28,10 +28,10 @@ async function discordInterface (msg, word) {
           })
         }
         // console.log({content: `${msg.author.mention} Select a number 1-${results.length + 1}`, embed})
-        // const specify = await msg.channel.createMessage({
-        //   content: `${msg.author.mention} Select a number 1-${results.length}`,
-        //   embed
-        // })
+        const specify = await msg.channel.createMessage({
+          content: `${msg.author.mention} Select a number 1-${results.length}`,
+          embed
+        })
         let count = 0
         let loop = setInterval(function () {
           count++
@@ -39,7 +39,7 @@ async function discordInterface (msg, word) {
           last = last[last.length - 1]
           if (last && last.timestamp > msg.timestamp) {
             clearInterval(loop)
-            // specify.delete()
+            specify.delete()
             let response = parseInt(last.content)
             if (isNaN(response) || response < 1 || response > results.length) {
               reject(new Error('NORESPONSE'))
@@ -47,12 +47,12 @@ async function discordInterface (msg, word) {
               resolve(results[response - 1])
             }
           }
-          if (count > 5) {
+          if (count > 60) {
             clearInterval(loop)
-            // specify.delete()
+            specify.delete()
             reject(new Error('TIMEOUT'))
           }
-        }, 200)
+        }, 1000)
       }
     }
   })
