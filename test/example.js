@@ -53,7 +53,7 @@ describe('Example', function () {
         ]
       }
     }
-    await command.define.run({ msg: msg1, params: ['ssnake'] })
-    .then((actual) => assert.equal(actual, expected))
+    await command.example.run({ msg: msg1, params: ['fast'] })
+    .then((actual) => assert.deepEqual(actual, expected))
   })
 })
