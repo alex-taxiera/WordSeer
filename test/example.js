@@ -3,7 +3,7 @@ const assert = require('assert')
 const command = require('../modules/commands')
 
 describe('Example', function () {
-  it('should return embed object with definitionsand corresponding example sentences', async function () {
+  it('should return embed object with definitions and corresponding example sentences', async function () {
     const author = {
       id: '123',
       mention: ''
